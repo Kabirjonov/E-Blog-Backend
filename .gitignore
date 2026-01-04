@@ -1,0 +1,10 @@
+.env
+env/
+.log
+logs/
+log/
+temp/
+node_modules/
+/info
+/public/images
+/static
