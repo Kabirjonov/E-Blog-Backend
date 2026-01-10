@@ -16,7 +16,12 @@ class MailService {
 			const result = await this.transport.sendMail({
 				from: `"E-Blog" <${process.env.SMTP_User}>`,
 				to: email,
-				html: `<div><a href="${resetUrl}">Click to reset your password</a></div>`,
+				subject: "Forgot password. This email can be used during 15 minutes",
+				html: `<div>
+				<h1>E-Blog</h1>
+				<a href="${resetUrl}">Click to reset your password</a></div>
+				<b>This link will work during 15 minutes</b>
+				`,
 			});
 			console.log("Email sent:", result.messageId);
 		} catch (error) {

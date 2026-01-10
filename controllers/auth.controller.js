@@ -34,7 +34,6 @@ class AuthController {
 		return res.send({ message: "", body: data, status: 200 });
 	}
 	async refresh(req, res) {
-		console.log("refresh token controller");
 		const { refreshToken } = req.cookies;
 		const userData = await authService.refresh(refreshToken);
 		res.cookie("refreshToken", userData.refreshToken, {
@@ -52,7 +51,7 @@ class AuthController {
 		await authService.forgotPassword(email);
 		res.send({
 			status: 200,
-			message: "We send you link to reset your password",
+			message: "We send your email link to reset your password",
 		});
 	}
 	async resetPassword(req, res) {

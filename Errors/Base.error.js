@@ -1,4 +1,4 @@
-module.exports = class BaseError extends Error {
+class BaseError extends Error {
 	status;
 	errors;
 	constructor(status, message, errors) {
@@ -10,7 +10,11 @@ module.exports = class BaseError extends Error {
 	static UnauthorizedError() {
 		return new BaseError(401, "User is not authorized");
 	}
-	static BedRequest(status = 400, message, errors = []) {
+	static Forbidden(message = "Access denied") {
+		return new BaseError(403, message);
+	}
+	static BaseError(status = 400, message, errors = []) {
 		return new BaseError(status, message, errors);
 	}
-};
+}
+module.exports = BaseError;

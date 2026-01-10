@@ -12,19 +12,17 @@ function canModifyArticle(allowedRoles = []) {
 		) {
 			return next();
 		}
-
-		throw BaseError.BadRequest(403, "Access denied");
+		throw BaseError.Forbidden();
 	};
 }
 
 function canModifyUser(allowedRoles = []) {
 	return async (req, res, next) => {
 		const user = req.user;
-		console.log("canModifyUser user:", user);
 		if (allowedRoles.includes(user.role) || user.id === req.params.id) {
 			return next();
 		} else {
-			throw BaseError.BedRequest(400, "Access denied");
+			throw BaseError.Forbidden();
 		}
 	};
 }

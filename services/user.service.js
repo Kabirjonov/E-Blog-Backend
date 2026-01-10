@@ -8,7 +8,7 @@ class UserService {
 	}
 	async getById(id) {
 		const user = await User.findById(id).select("-password").populate();
-		if (!user || !id) throw BaseError.BedRequest(404, "User not found");
+		if (!user || !id) throw BaseError.BadRequest(404, "User not found");
 		return user;
 	}
 	async create(body, picture) {
@@ -18,7 +18,7 @@ class UserService {
 	}
 	async delete(id) {
 		const user = await User.findByIdAndDelete(id);
-		if (!user || !id) throw BaseError.BedRequest(404, "User not found");
+		if (!user || !id) throw BaseError.BadRequest(404, "User not found");
 		if (user.picture) {
 			await fileService.delete(user.picture);
 		}
@@ -26,7 +26,7 @@ class UserService {
 	}
 	async edit(body, id) {
 		const update = await User.findByIdAndUpdate(id, body, { new: true });
-		if (!update || !id) throw BaseError.BedRequest(404, "User not found");
+		if (!update || !id) throw BaseError.BadRequest(404, "User not found");
 		return update;
 	}
 }

@@ -8,7 +8,7 @@ class articleService {
 	}
 	async getById(id) {
 		const data = await Article.findById(id);
-		if (!id) throw BaseError.BedRequest("id not found");
+		if (!id) throw BaseError.BadRequest("id not found");
 		return data;
 	}
 	async create(body, picture) {
@@ -16,20 +16,18 @@ class articleService {
 		return await Article.create({ ...body, picture: fileName });
 	}
 	async edit(id, body, picture) {
-		if (!id) throw BaseError.BedRequest("id not found");
+		if (!id) throw BaseError.BadRequest("id not found");
 		if (picture) {
 			const fileName = fileService.save(picture);
 			body.picture = fileName;
 		}
 		const result = await Article.findByIdAndUpdate(id, body, { new: true });
-		console.log(result);
-
 		return result;
 	}
 	async delete(id) {
 		const result = await Article.findByIdAndDelete(id);
 		if (!result) {
-			throw BaseError.BedRequest("Article not found");
+			throw BaseError.BadRequest("Article not found");
 		}
 		return result;
 	}
