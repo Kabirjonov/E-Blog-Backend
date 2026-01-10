@@ -15,11 +15,16 @@ class articleService {
 		const fileName = fileService.save(picture);
 		return await Article.create({ ...body, picture: fileName });
 	}
-	async edit(id, body) {
-		if (!id) {
-			throw BaseError.BedRequest("id not found");
+	async edit(id, body, picture) {
+		if (!id) throw BaseError.BedRequest("id not found");
+		if (picture) {
+			const fileName = fileService.save(picture);
+			body.picture = fileName;
 		}
-		return await Article.findByIdAndUpdate(id, body, { new: true });
+		const result = await Article.findByIdAndUpdate(id, body, { new: true });
+		console.log(result);
+
+		return result;
 	}
 	async delete(id) {
 		const result = await Article.findByIdAndDelete(id);

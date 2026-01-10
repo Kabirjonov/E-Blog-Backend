@@ -5,16 +5,17 @@ const tokenService = require("./token.service");
 const BaseError = require("../Errors/Base.error");
 const mailService = require("./mail.service");
 const fileService = require("./file.service");
+const { RoleEnum } = require("../constants/RoleEnum");
 
 class AuthService {
 	async register(body, picture) {
 		const { username, email, password } = body;
 		const existUser = await User.findOne({ email });
 		if (existUser) {
-			throw BaseError.BedRequest(`${email} this email already registered`);
+			throw BaseError.BedRequest(400, `${email} this email already registered`);
 		}
-		const fileName = fileService.save(picture);
 		const hashPassword = await bcrypt.hash(password, 10);
+		const fileName = fileService.save(picture);
 		const user = await User.create({
 			username,
 			email,
@@ -26,14 +27,14 @@ class AuthService {
 		await tokenService.saveToken(userDto.id, tokens.refreshToken);
 		return { user: userDto, ...tokens };
 	}
+
 	async login(email, password) {
+		console.log("Auth login service:", email, password);
 		const user = await User.findOne({ email });
-		if (!user) {
-			throw BaseError.BedRequest("email or password is incorrect");
-		}
 		const isPassword = await bcrypt.compare(password, user.password);
-		if (!isPassword) {
-			throw BaseError.BedRequest("email or password is incorrect");
+		console.log(isPassword);
+		if (!isPassword || !user) {
+			throw BaseError.BedRequest(400, "email or password is incorrect");
 		}
 		const userDto = new UserDto(user);
 		const tokens = tokenService.generateToken({ ...userDto });
@@ -48,14 +49,21 @@ class AuthService {
 		if (!refreshToken) {
 			throw BaseError.BedRequest("Bed authorization");
 		}
+		console.log("auth.service refreshToken", refreshToken);
 		const userPayload = tokenService.validateRefreshToken(refreshToken);
+		console.log("auth.service userPayload", userPayload);
 		const tokenDB = await tokenService.findToken(refreshToken);
+
 		if (!tokenDB || !userPayload) {
 			throw BaseError.BedRequest("Bed authorization");
 		}
+
 		const user = await User.findById(userPayload.id);
+
+		console.log("auth refresh token user", user);
 		const userDto = new UserDto(user);
-		const tokens = tokenService.generateToken({ userDto });
+		console.log("auth refresh token userDto", userDto);
+		const tokens = tokenService.generateToken({ ...userDto });
 		await tokenService.saveToken(userDto.id, tokens.refreshToken);
 		return { user: userDto, ...tokens };
 	}
@@ -81,7 +89,7 @@ class AuthService {
 		);
 	}
 	async updateUserRole(id, role) {
-		const validRoles = ["user", "admin", "superadmin"];
+		const validRoles = [RoleEnum.USER, RoleEnum.ADMIN, RoleEnum.SUPERADMIN];
 		if (!validRoles.includes(role)) {
 			throw BaseError.BedRequest("Invalid role");
 		}

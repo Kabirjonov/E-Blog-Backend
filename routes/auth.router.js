@@ -7,7 +7,7 @@ const auth = require("../middleware/auth.middleware");
 
 const {
 	removeRole,
-	canModifyArticle,
+	canModifyUser,
 } = require("../middleware/authorize.middleware");
 const { RoleEnum } = require("../constants/RoleEnum");
 
@@ -31,8 +31,8 @@ router.post("/reset-password/:token", authController.resetPassword);
 router.put(
 	"/update-role/:id",
 	auth,
-	canModifyArticle([RoleEnum.SUPERADMIN]),
-
+	validate(Validaters.registerUser),
+	canModifyUser([RoleEnum.SUPERADMIN]),
 	authController.updateUserRole
 );
 

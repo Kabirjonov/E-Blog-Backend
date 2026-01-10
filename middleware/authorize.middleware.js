@@ -4,21 +4,25 @@ const { Article } = require("../models/Article.model");
 function canModifyArticle(allowedRoles = []) {
 	return async (req, res, next) => {
 		const article = await Article.findById(req.params.id);
-		if (!article) throw BaseError.BedRequest("article not found");
+		const authorId = req.user.id;
+		if (!article) throw BaseError.BadRequest(404, "article not found");
 		if (
-			article.author !== req.user.id &&
-			!allowedRoles.includes(req.user.role)
+			article.auther.toString() == authorId ||
+			allowedRoles.includes(req.user.role)
 		) {
-			throw BaseError.BedRequest("Access denied");
+			return next();
 		}
-		next();
+
+		throw BaseError.BadRequest(403, "Access denied");
 	};
 }
+
 function canModifyUser(allowedRoles = []) {
 	return async (req, res, next) => {
 		const user = req.user;
+		console.log("canModifyUser user:", user);
 		if (allowedRoles.includes(user.role) || user.id === req.params.id) {
-			next();
+			return next();
 		} else {
 			throw BaseError.BedRequest(400, "Access denied");
 		}

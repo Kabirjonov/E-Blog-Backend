@@ -15,7 +15,7 @@ class articleController {
 		});
 	}
 	async create(req, res) {
-		// req.body.auther = req.user.id;
+		req.body.auther = req.user.id;
 		const result = await articleService.create(req.body, req.files.picture);
 		res.status(201).send({
 			status: 201,
@@ -25,16 +25,23 @@ class articleController {
 	}
 	async edit(req, res) {
 		const { params, body } = req;
-		const result = await articleService.edit(params.id, body);
+		console.log(params, body);
+		const result = await articleService.edit(
+			params.id,
+			body,
+			req.files?.picture
+		);
 		res
 			.status(200)
 			.send({ message: "Article is update", body: result, status: 200 });
 	}
 	async delete(req, res) {
 		const result = await articleService.delete(req.params.id);
-		res
-			.status(200)
-			.send({ message: "article is deleted", body: result, status: 200 });
+		res.status(200).send({
+			message: "Article is deleted successfully",
+			body: result,
+			status: 200,
+		});
 	}
 }
 module.exports = new articleController();

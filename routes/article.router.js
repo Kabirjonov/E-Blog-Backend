@@ -11,7 +11,7 @@ router.get("/getAll", articleController.getAll);
 router.get("/getOne/:id", articleController.getById);
 router.post(
 	"/create",
-	// auth,
+	auth,
 	validate(Validaters.createArticle),
 	articleController.create
 );
@@ -23,8 +23,8 @@ router.put(
 );
 router.delete(
 	"/delete/:id",
-	// auth,
-	// canModifyArticle([RoleEnum.ADMIN,RoleEnum.SUPERADMIN]),
+	auth,
+	canModifyArticle([RoleEnum.ADMIN, RoleEnum.SUPERADMIN]),
 	articleController.delete
 );
 
