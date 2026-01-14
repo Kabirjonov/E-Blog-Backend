@@ -8,7 +8,7 @@ const { canModifyArticle } = require("../middleware/authorize.middleware");
 const { RoleEnum } = require("../constants/RoleEnum");
 
 router.get("/getAll", articleController.getAll);
-router.get("/getOne/:id", articleController.getById);
+router.get("/getById/:id", articleController.getById);
 router.post(
 	"/create",
 	auth,

@@ -7,7 +7,7 @@ class articleService {
 		return await Article.find().populate("auther");
 	}
 	async getById(id) {
-		const data = await Article.findById(id);
+		const data = await Article.findById(id).populate("auther");
 		if (!id) throw BaseError.BadRequest("id not found");
 		return data;
 	}
