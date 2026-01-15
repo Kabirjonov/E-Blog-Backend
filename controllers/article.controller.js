@@ -1,10 +1,16 @@
 const articleService = require("../services/article.service");
 class articleController {
 	async getAll(req, res) {
-		const result = await articleService.getAll();
-		res
-			.status(200)
-			.send({ message: "All articles", body: result, status: 200 });
+		const page = Number(req.query.page) || 1;
+		const limit = Number(req.query.limit) || 9;
+
+		const result = await articleService.getAll(page, limit);
+
+		res.status(200).send({
+			message: "All articles",
+			status: 200,
+			body: result,
+		});
 	}
 	async getById(req, res) {
 		const result = await articleService.getById(req.params.id);
