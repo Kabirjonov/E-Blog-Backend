@@ -13,7 +13,7 @@ class BaseError extends Error {
 	static Forbidden(message = "Access denied") {
 		return new BaseError(403, message);
 	}
-	static BaseError(status = 400, message, errors = []) {
+	static BadRequest(status = 400, message, errors = []) {
 		return new BaseError(status, message, errors);
 	}
 }

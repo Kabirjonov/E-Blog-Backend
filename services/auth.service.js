@@ -30,8 +30,10 @@ class AuthService {
 
 	async login(email, password) {
 		const user = await User.findOne({ email });
+		if (!user)
+			throw BaseError.BadRequest(400, "email or password is incorrect");
 		const isPassword = await bcrypt.compare(password, user.password);
-		if (!isPassword || !user) {
+		if (!isPassword) {
 			throw BaseError.BadRequest(400, "email or password is incorrect");
 		}
 		const userDto = new UserDto(user);
